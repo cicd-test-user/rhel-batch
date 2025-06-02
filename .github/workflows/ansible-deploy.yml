@@ -1,0 +1,41 @@
+name: Deploy to EC2 via Ansible (SSM)
+
+on:
+  push:
+    branches:
+      - main   # mainブランチへのpushをトリガーに実行（必要に応じて変更）
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::368017226728:role/GitHubActionsOidcRole
+          aws-region: ap-northeast-1
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install -r requirements.yaml
+
+      - name: Run Ansible Playbook for Batch Server
+        run: |
+          ansible-playbook \
+            -i inventories/prod/aws_ec2.yaml \
+            playbooks/batch.yaml
