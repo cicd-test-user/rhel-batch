@@ -1,13 +1,3 @@
-# roles/batch/tasks/main.yml
-
-- name: Create deploy check folder
-  ansible.builtin.file:
-    path: /tmp/deploy_check
-    state: directory
-    mode: '0755'
-
-- name: Create deploy check file
-  ansible.builtin.copy:
-    dest: /tmp/deploy_check/deployed.txt
-    content: "Batch server setup completed.\n"
-    mode: '0644'
+- name: Echo message for RHEL batch setup
+  ansible.builtin.debug:
+    msg: "RHEL Batch server role is applied."
