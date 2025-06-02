@@ -1,9 +1,13 @@
-- name: Show deployment message
-  ansible.builtin.debug:
-    msg: "RHEL Batch server role is applied."
+# roles/batch/tasks/main.yml
 
-- name: Create deploy check file with timestamp (SSM対応)
-  ansible.builtin.shell: |
-    date +'%Y-%m-%dT%H:%M:%S' > /tmp/deploy_check_$(date +'%Y%m%d%H%M%S').txt
-  args:
-    executable: /bin/bash
+- name: Create deploy check folder
+  ansible.builtin.file:
+    path: /tmp/deploy_check
+    state: directory
+    mode: '0755'
+
+- name: Create deploy check file
+  ansible.builtin.copy:
+    dest: /tmp/deploy_check/deployed.txt
+    content: "Batch server setup completed.\n"
+    mode: '0644'
