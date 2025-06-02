@@ -1,17 +1,17 @@
-name: Deploy to EC2 via Ansible (SSM)
+name: Deploy RHEL Batch via Ansible
 
 on:
   push:
     branches:
-      - main   # mainブランチへのpushをトリガーに実行（必要に応じて変更）
-
-permissions:
-  id-token: write
-  contents: read
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -23,7 +23,7 @@ jobs:
           role-to-assume: arn:aws:iam::368017226728:role/GitHubActionsOidcRole
           aws-region: ap-northeast-1
 
-      - name: Set up Python environment
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
@@ -31,11 +31,15 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Install Ansible collections
-        run: ansible-galaxy collection install -r requirements.yaml
+      - name: Install Ansible Galaxy collections
+        run: |
+          ansible-galaxy collection install -r requirements.yaml --force
 
-      - name: Run Ansible Playbook for Batch Server
+      - name: Run Ansible playbook (Batch server)
         run: |
           ansible-playbook \
             -i inventories/prod/aws_ec2.yaml \
             playbooks/batch.yaml
+        env:
+          AWS_REGION: ap-northeast-1
+          AWS_DEFAULT_REGION: ap-northeast-1
