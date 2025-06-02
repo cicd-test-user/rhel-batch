@@ -2,10 +2,6 @@
   ansible.builtin.debug:
     msg: "RHEL Batch server role is applied."
 
-# setupモジュールはSSM経由だと失敗する場合があるので代替案で
-# - name: Gather facts manually
-#   ansible.builtin.setup:
-
 - name: Create deploy check file with timestamp (SSM対応)
   ansible.builtin.shell: |
     date +'%Y-%m-%dT%H:%M:%S' > /tmp/deploy_check_$(date +'%Y%m%d%H%M%S').txt
