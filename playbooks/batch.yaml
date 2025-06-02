@@ -1,7 +1,11 @@
 - name: Setup RHEL Batch Server
   hosts: tag__Batch
-  become: true
   gather_facts: true
+  become: true
+
+  vars:
+    ansible_connection: amazon.aws.aws_ssm
+    ansible_region: ap-northeast-1
 
   roles:
     - batch
