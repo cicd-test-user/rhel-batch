@@ -1,17 +1,11 @@
-- name: Echo message for RHEL batch setup
+- name: Show deployment message
   ansible.builtin.debug:
     msg: "RHEL Batch server role is applied."
 
-- name: Create deploy check file
-  ansible.builtin.command:
-    cmd: echo "Deploy successful - {{ ansible_date_time.iso8601 }}" > /tmp/deploy_check.txt
-  changed_when: true
+- name: Gather facts manually
+  ansible.builtin.setup:
 
-- name: Verify deploy check file
-  ansible.builtin.command:
-    cmd: cat /tmp/deploy_check.txt
-  register: deploy_check_output
-
-- name: Show deploy check result
-  ansible.builtin.debug:
-    var: deploy_check_output.stdout
+- name: Create deploy check file with timestamp
+  ansible.builtin.copy:
+    dest: "/tmp/deploy_check_{{ ansible_date_time.iso8601 }}.txt"
+    content: "Deployed at {{ ansible_date_time.iso8601 }}"
