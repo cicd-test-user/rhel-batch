@@ -1,28 +1,4 @@
 # roles/batch/tasks/main.yml
-
-- name: Install SSM Agent (RHEL用)
-  block:
-    - name: Download amazon-ssm-agent.rpm
-      ansible.builtin.get_url:
-        url: https://s3.ap-northeast-1.amazonaws.com/amazon-ssm-ap-northeast-1/latest/linux_amd64/amazon-ssm-agent.rpm
-        dest: /tmp/amazon-ssm-agent.rpm
-        mode: '0644'
-
-    - name: Install SSM Agent
-      ansible.builtin.yum:
-        name: /tmp/amazon-ssm-agent.rpm
-        state: present
-
-    - name: Enable and start SSM Agent
-      ansible.builtin.systemd:
-        name: amazon-ssm-agent
-        enabled: true
-        state: started
-
-- name: Create directory for HULFT file exchange
-  ansible.builtin.file:
-    path: /shared/hulft
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
+- name: Echo message for RHEL batch setup
+  ansible.builtin.debug:
+    msg: "RHEL Batch server role is applied."
