@@ -10,7 +10,7 @@ hostnames:
   - tag:Name
 
 compose:
-  ansible_host: instance_id
+  ansible_host: name
 
 keyed_groups:
   - key: tags.Role
