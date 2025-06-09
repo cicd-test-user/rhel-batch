@@ -1,0 +1,3 @@
+# ロケール設定の再読み込み（source を使って反映）
+- name: reload locale
+  command: source /etc/locale.conf

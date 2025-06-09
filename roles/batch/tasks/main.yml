@@ -1,3 +1,0 @@
-- name: Echo message for RHEL batch setup
-  ansible.builtin.debug:
-    msg: "RHEL Batch server role is applied."

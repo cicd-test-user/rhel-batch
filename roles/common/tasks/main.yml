@@ -1,0 +1,57 @@
+# タイムゾーンを日本標準時に設定
+- name: Set timezone to Asia/Tokyo
+  timezone:
+    name: Asia/Tokyo
+
+# ロケール設定ファイルに ja_JP.UTF-8 を設定
+- name: Set system locale to ja_JP.UTF-8
+  lineinfile:
+    path: /etc/locale.conf
+    regexp: '^LANG='
+    line: 'LANG=ja_JP.UTF-8'
+  notify: reload locale  # 設定反映のため handler を呼び出す
+
+# ja_JP.UTF-8 ロケールを生成（未生成時のみ実行）
+- name: Generate ja_JP.UTF-8 locale
+  command: localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+  args:
+    creates: /usr/lib/locale/ja_JP.utf8  # 既に存在すればスキップ
+
+# ホスト名をインベントリのホスト名に設定（定義されている場合のみ）
+- name: Set hostname if specified
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: inventory_hostname is defined
+
+# chrony による時刻同期の設定ブロック
+- name: Configure NTP using chrony
+  block:
+    # chrony パッケージをインストール
+    - name: Install chrony
+      package:
+        name: chrony
+        state: present
+
+    # chrony サービスを有効化・起動
+    - name: Enable and start chronyd
+      service:
+        name: chronyd
+        state: started
+        enabled: true
+
+# 運用用ユーザー batchadmin を作成（sudo グループ所属）
+- name: Create operational user
+  user:
+    name: batchadmin
+    comment: Batch Operation User
+    groups: wheel
+    shell: /bin/bash
+    create_home: true
+
+# batchadmin にパスワード不要の sudo 権限を付与
+- name: Configure sudoers for batchadmin
+  lineinfile:
+    path: /etc/sudoers.d/batchadmin
+    line: 'batchadmin ALL=(ALL) NOPASSWD:ALL'
+    create: yes
+    mode: '0440'
