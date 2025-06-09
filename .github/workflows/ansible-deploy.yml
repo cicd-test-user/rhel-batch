@@ -28,11 +28,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-
-      - name: Install Ansible Galaxy collections
+      - name: Install Python dependencies (boto3, botocore, ansible)
         run: |
+          pip install -r requirements.txt
+          pip install boto3 botocore
+
+      - name: Install Ansible Galaxy collections (with amazon.aws >=5.0.0)
+        run: |
+          ansible-galaxy collection install amazon.aws:>=5.0.0 --force
           ansible-galaxy collection install -r requirements.yaml --force
 
       - name: Run Ansible playbook (Batch server)
