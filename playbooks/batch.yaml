@@ -1,6 +1,6 @@
 - name: Setup RHEL Batch Server
   hosts: tag__Batch
-  gather_facts: false
+  gather_facts: true
   become: true
 
   roles:
