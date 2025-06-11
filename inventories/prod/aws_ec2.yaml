@@ -9,8 +9,8 @@ filters:
 hostnames:
   - tag:Name
 
-# compose:
-#   ansible_host: instance_id
+compose:
+  ansible_host: instance_id
 
 keyed_groups:
   - key: tags.Role
